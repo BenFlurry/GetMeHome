@@ -8,11 +8,8 @@
 import SwiftUI
 import MapKit
 
-
-
-
-
 struct MapView: View {
+    // THESE ARE HARDCODED FOR NOW
     @State var places = [Place(name: "Home",
                            lat: Home().lat,
                            long: Home().long)]
