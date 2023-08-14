@@ -6,10 +6,12 @@
 //
 
 import Foundation
+import MapKit
 
 struct Home {
     var lat: Double = 51.658539
     var long: Double = -0.703750
-    var zoom: Double = 0.05
+    var zoom: Double = 0.5
+    var location = CLLocationCoordinate2D(latitude: 51.658539, longitude: -0.703750)
 }
 

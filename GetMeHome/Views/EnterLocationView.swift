@@ -25,11 +25,13 @@ struct Data {
 
 
 struct EnterLocationView: View {
+    @State var show: Bool = false
+    
     @State var inputtedStations: [Station] = Data().getDestinations()
     @State var destination: Station = Data().getStart()
-    @State var places = [Place(name: "Home",
-                               lat: Home().lat,
-                               long: Home().long)]
+    @State var places = [MapLocation(name: "Home",
+                                     lat: Home().lat,
+                                     long: Home().long)]
     // setup the place marker
     // setup the coordinate region
     @State var region = MKCoordinateRegion(
@@ -40,6 +42,8 @@ struct EnterLocationView: View {
             latitudeDelta: Home().zoom,
             longitudeDelta: Home().zoom))
     
+    @State var stationMapLocations: [MapLocation] = []
+    
     var body: some View {
         ZStack(alignment: .center) {
             Map(coordinateRegion: $region).ignoresSafeArea().opacity(1)
@@ -49,7 +53,7 @@ struct EnterLocationView: View {
                     .font(.largeTitle)
                     .fontWeight(.bold)
                     .padding()
-
+                
                 NavigationView {
                     List {
                         Section(header: Text("Start")
@@ -84,13 +88,14 @@ struct EnterLocationView: View {
                 .cornerRadius(15.0)
                 .shadow(radius: 30)
                 .padding(.horizontal)
-
+                
                 // Go Button
                 HStack {
                     Spacer()
                         .padding()
                     Button {
-                        processInputs()
+                        stationMapLocations = processInputs()
+                        show = true
                     } label: {
                         Text("Go!")
                             .font(.title)
@@ -107,6 +112,11 @@ struct EnterLocationView: View {
                         RoundedRectangle(cornerRadius: 20)
                             .stroke(Color.gray, lineWidth: 2)
                     )
+                    
+                    NavigationLink(
+                        destination: StationMapView(places: $stationMapLocations), label: { EmptyView() }
+                    )
+                    
                     Spacer()
                         .padding()
                 } // HStack Go Button
@@ -114,12 +124,50 @@ struct EnterLocationView: View {
         } // Screen ZStack
     } // var View
     
-    func processInputs() -> Void {
+    // MIGHT WANT TO USE MKLOCALSEARCHCOMPLETER TO AUTOCOMPLETE THE START AND DESTINATION
+    func processInputs() -> [MapLocation] {
+        var stationMapLocations: [MapLocation] = []
         // pass the start point into apple maps to find location
-        // pass the destinations into apple maps to find location
-        // get the coords for the locations, create the Place structs and pass into MapView
+        for station in inputtedStations {
+            getLocationFromName(name: station.name) { coordinates in
+                if let coordinates = coordinates {
+                    //                    region.center = coordinates
+                    let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
+                    
+                    stationMapLocations.append(stationWithCoordinates)
+                    print(stationMapLocations)
+                }
+            }
+        }
+        return stationMapLocations
     }
     
+    
+    
+    func getLocationFromName(name: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = name + " Station"
+        searchRequest.region = region
+        searchRequest.pointOfInterestFilter = MKPointOfInterestFilter(including: [MKPointOfInterestCategory(rawValue: "publicTransport")])
+        
+        
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { response, error in
+            guard let item = response?.mapItems.first, let location = item.placemark.location else {
+                completion(nil)
+                return
+            }
+            
+            completion(location.coordinate)
+        }
+        
+        
+    }
+    
+}
+
+enum LocationSearchResponseError: Error {
+    case error
 }
 
 struct EnterLocationView_Previews: PreviewProvider {

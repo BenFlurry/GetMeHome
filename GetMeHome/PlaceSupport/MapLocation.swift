@@ -8,7 +8,7 @@
 import Foundation
 import MapKit
 
-struct Place: Identifiable {
+struct MapLocation: Identifiable {
     let id = UUID()
     let name: String
     let coordinate: CLLocationCoordinate2D
@@ -18,5 +18,10 @@ struct Place: Identifiable {
         self.coordinate = CLLocationCoordinate2D(
             latitude: lat,
             longitude: long)
+    }
+    
+    init(name: String, coordinate: CLLocationCoordinate2D) {
+        self.name = name
+        self.coordinate = coordinate
     }
 }

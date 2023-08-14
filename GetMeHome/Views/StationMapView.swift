@@ -8,17 +8,15 @@
 import SwiftUI
 import MapKit
 
-struct MapView: View {
+struct StationMapView: View {
     // THESE ARE HARDCODED FOR NOW
-    @State var places = [Place(name: "Home",
-                           lat: Home().lat,
-                           long: Home().long)]
+    @Binding var places: [MapLocation]
     // setup the place marker
     // setup the coordinate region
     @State var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
-            latitude: Home().lat,
-            longitude: Home().long),
+            latitude: 0.0,
+            longitude: 0.0),
         span: MKCoordinateSpan(
             latitudeDelta: Home().zoom,
             longitudeDelta: Home().zoom))
@@ -37,8 +35,8 @@ struct MapView: View {
 
         
 
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView()
-    }
-}
+//struct ContentView_Previews: PreviewProvider {
+//    static var previews: some View {
+//        StationMapView()
+//    }
+//}
