@@ -25,7 +25,7 @@ struct StationMapView: View {
         Map(coordinateRegion: $region,
             annotationItems: places) { place in
             MapMarker(coordinate: place.coordinate, tint: .cyan)
-//            MapAnnotation(coordinate: place.coordinate, content: { Text(place.name) })
+
         }
         .ignoresSafeArea()
     }

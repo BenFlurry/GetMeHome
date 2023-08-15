@@ -25,13 +25,12 @@ struct Data {
 
 
 struct EnterLocationView: View {
-    @State var show: Bool = false
+    @State var dataRecieved: Bool = false
     
     @State var inputtedStations: [Station] = Data().getDestinations()
     @State var destination: Station = Data().getStart()
-    @State var places = [MapLocation(name: "Home",
-                                     lat: Home().lat,
-                                     long: Home().long)]
+
+    @State var stationMapLocations: [MapLocation] = []
     // setup the place marker
     // setup the coordinate region
     @State var region = MKCoordinateRegion(
@@ -42,103 +41,106 @@ struct EnterLocationView: View {
             latitudeDelta: Home().zoom,
             longitudeDelta: Home().zoom))
     
-    @State var stationMapLocations: [MapLocation] = []
+
     
     var body: some View {
         ZStack(alignment: .center) {
-            Map(coordinateRegion: $region).ignoresSafeArea().opacity(1)
             
-            VStack() {
-                Text("Get Me Home")
-                    .font(.largeTitle)
-                    .fontWeight(.bold)
-                    .padding()
-                
-                NavigationView {
-                    List {
-                        Section(header: Text("Start")
-                            .fontWeight(.bold)
-                            .font(.title)) {
-                                TextField("Enter Start Station", text: $destination.name)
-                            }
-                        Section(header: Text("Destinations")
-                            .fontWeight(.bold)
-                            .font(.title)
-                        ) {
-                            ForEach($inputtedStations) { $station in
-                                TextField("Enter Destination Station", text: $station.name)
-                            }
-                            .onDelete { inputtedStations.remove(atOffsets: $0) }
-                            .onMove { inputtedStations.move(fromOffsets: $0, toOffset: $1) }
-                        } // Section
-                    } // List
-                    .toolbar {
-                        ToolbarItem(placement: .navigationBarTrailing) {
-                            EditButton().font(.title3).fontWeight(.semibold)
-                        } // ToolbarItem
-                        ToolbarItem(placement: .bottomBar) {
-                            Button {
-                                inputtedStations.append(Station(name:""))
-                            } label: {
-                                Text("Add Destination").font(.title3).fontWeight(.semibold)
-                            }
-                        } // ToolbarItem
-                    } // toolbar
-                } // NavigationView
-                .cornerRadius(15.0)
-                .shadow(radius: 30)
-                .padding(.horizontal)
-                
-                // Go Button
-                HStack {
-                    Spacer()
+            
+            if dataRecieved == false {
+                Map(coordinateRegion: $region).ignoresSafeArea().opacity(1)
+                VStack() {
+                    Text("Get Me Home")
+                        .font(.largeTitle)
+                        .fontWeight(.bold)
                         .padding()
-                    Button {
-                        stationMapLocations = processInputs()
-                        show = true
-                    } label: {
-                        Text("Go!")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                    }
-                    .foregroundColor(.white)
-                    .padding()
-                    .frame(minWidth: 0, maxWidth: .infinity)
-                    .background(Color.white)
-                    .cornerRadius(20)
-                    .shadow(radius: 5)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(Color.gray, lineWidth: 2)
-                    )
                     
-                    NavigationLink(
-                        destination: StationMapView(places: $stationMapLocations), label: { EmptyView() }
-                    )
+                    NavigationView {
+                        List {
+                            Section(header: Text("Start")
+                                .fontWeight(.bold)
+                                .font(.title)) {
+                                    TextField("Enter Start Station", text: $destination.name)
+                                }
+                            Section(header: Text("Destinations")
+                                .fontWeight(.bold)
+                                .font(.title)
+                            ) {
+                                ForEach($inputtedStations) { $station in
+                                    TextField("Enter Destination Station", text: $station.name)
+                                }
+                                .onDelete { inputtedStations.remove(atOffsets: $0) }
+                                .onMove { inputtedStations.move(fromOffsets: $0, toOffset: $1) }
+                            } // Section
+                        } // List
+                        .toolbar {
+                            ToolbarItem(placement: .navigationBarTrailing) {
+                                EditButton().font(.title3).fontWeight(.semibold)
+                            } // ToolbarItem
+                            ToolbarItem(placement: .bottomBar) {
+                                Button {
+                                    inputtedStations.append(Station(name:""))
+                                } label: {
+                                    Text("Add Destination").font(.title3).fontWeight(.semibold)
+                                }
+                            } // ToolbarItem
+                        } // toolbar
+                    } // NavigationView
+                    .cornerRadius(15.0)
+                    .shadow(radius: 30)
+                    .padding(.horizontal)
                     
-                    Spacer()
+                    // Go Button
+                    HStack {
+                        Spacer()
+                            .padding()
+                        Button {
+                            stationMapLocations = processInputs()
+                        } label: {
+                            Text("Go!")
+                                .font(.title)
+                                .fontWeight(.bold)
+                                .foregroundColor(.black)
+                        }
+                        .foregroundColor(.white)
                         .padding()
-                } // HStack Go Button
-            }// Screen VStack
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                        .background(Color.white)
+                        .cornerRadius(20)
+                        .shadow(radius: 5)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 20)
+                                .stroke(Color.gray, lineWidth: 2)
+                        )
+                        
+                        Spacer()
+                            .padding()
+                    } // HStack Go Button
+                } // Screen VStack
+            }
+            if dataRecieved == true {
+                Map(coordinateRegion: $region,
+                    annotationItems: stationMapLocations) { place in
+                    MapMarker(coordinate: place.coordinate, tint: .red)
+                }
+                    .ignoresSafeArea()
+            }
         } // Screen ZStack
     } // var View
     
     // MIGHT WANT TO USE MKLOCALSEARCHCOMPLETER TO AUTOCOMPLETE THE START AND DESTINATION
     func processInputs() -> [MapLocation] {
-        var stationMapLocations: [MapLocation] = []
-        // pass the start point into apple maps to find location
         for station in inputtedStations {
             getLocationFromName(name: station.name) { coordinates in
                 if let coordinates = coordinates {
-                    //                    region.center = coordinates
+                    region.center = coordinates
                     let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
                     
                     stationMapLocations.append(stationWithCoordinates)
-                    print(stationMapLocations)
                 }
             }
         }
+        dataRecieved = true
         return stationMapLocations
     }
     
@@ -157,18 +159,13 @@ struct EnterLocationView: View {
                 completion(nil)
                 return
             }
-            
+            region.center = location.coordinate
             completion(location.coordinate)
         }
-        
-        
     }
     
 }
 
-enum LocationSearchResponseError: Error {
-    case error
-}
 
 struct EnterLocationView_Previews: PreviewProvider {
     static var previews: some View {
