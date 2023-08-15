@@ -95,7 +95,7 @@ struct EnterLocationView: View {
                         Spacer()
                             .padding()
                         Button {
-                            stationMapLocations = processInputs()
+                            processStationNames()
                         } label: {
                             Text("Go!")
                                 .font(.title)
@@ -129,7 +129,7 @@ struct EnterLocationView: View {
     } // var View
     
     // MIGHT WANT TO USE MKLOCALSEARCHCOMPLETER TO AUTOCOMPLETE THE START AND DESTINATION
-    func processInputs() -> [MapLocation] {
+    func processStationNames() -> [MapLocation] {
         for station in inputtedStations {
             getLocationFromName(name: station.name) { coordinates in
                 if let coordinates = coordinates {
