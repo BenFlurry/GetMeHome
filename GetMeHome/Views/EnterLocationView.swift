@@ -25,7 +25,7 @@ struct Data {
 
 
 struct EnterLocationView: View {
-    @State var dataRecieved: Bool = false
+    @State var showForm: Bool = false
     
     @State var inputtedStations: [Station] = Data().getDestinations()
     @State var destination: Station = Data().getStart()
@@ -45,9 +45,7 @@ struct EnterLocationView: View {
     
     var body: some View {
         ZStack(alignment: .center) {
-            
-            
-            if dataRecieved == false {
+            if showForm == false {
                 Map(coordinateRegion: $region).ignoresSafeArea().opacity(1)
                 VStack() {
                     Text("Get Me Home")
@@ -118,13 +116,43 @@ struct EnterLocationView: View {
                     } // HStack Go Button
                 } // Screen VStack
             }
-            if dataRecieved == true {
-                Map(coordinateRegion: $region,
-                    annotationItems: stationMapLocations) { place in
-                    MapMarker(coordinate: place.coordinate, tint: .red)
-                }
-                    .ignoresSafeArea()
-            }
+            if showForm == true {
+                ZStack() {
+                    Map(coordinateRegion: $region,
+                        annotationItems: stationMapLocations) { place in
+                        MapMarker(coordinate: place.coordinate, tint: .red)
+                    }
+                        .ignoresSafeArea()
+                    VStack () {
+                        Spacer()
+                        HStack {
+                            Spacer()
+                                .padding()
+                            Button {
+                                showForm = false
+                            } label: {
+                                Text("Back")
+                                    .font(.title)
+                                    .fontWeight(.bold)
+                                    .foregroundColor(.black)
+                            }
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(minWidth: 0, maxWidth: .infinity)
+                            .background(Color.white)
+                            .cornerRadius(20)
+                            .shadow(radius: 5)
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 20)
+                                    .stroke(Color.gray, lineWidth: 2)
+                            )
+                            
+                            Spacer()
+                                .padding()
+                        } // HStack Back Button
+                    } // VStack Back Button
+                } // ZStack for Map
+            } // if statement for showing menu
         } // Screen ZStack
     } // var View
     
@@ -140,7 +168,7 @@ struct EnterLocationView: View {
                 }
             }
         }
-        dataRecieved = true
+        showForm = true
         return stationMapLocations
     }
     
