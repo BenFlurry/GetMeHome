@@ -22,51 +22,30 @@ struct StationMapView: View {
             latitudeDelta: Home().zoom,
             longitudeDelta: Home().zoom))
     
-    @State var stationMapLocations: [MapLocation] = []
+    //    @State var stationMapLocations: [MapLocation] = []
     
     var body: some View {
-        ZStack() {
-            Map(coordinateRegion: $region,
-                annotationItems: stationMapLocations) { place in
-                MapMarker(coordinate: place.coordinate, tint: .red)
-            }
-                .ignoresSafeArea()
-            VStack () {
-                Spacer()
-                HStack {
-                    Spacer()
-                        .padding()
-                    NavigationLink(destination: FormView(startStation: $startStation, destinationStations: $destinationStations)) {
-                        Text("Go!")
-                            .font(.title)
-                            .fontWeight(.bold)
-                            .foregroundColor(.black)
-                        }
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(minWidth: 0, maxWidth: .infinity)
-                        .background(Color.white)
-                        .cornerRadius(20)
-                        .shadow(radius: 5)
-                        
-                    Spacer()
-                        .padding()
-                } // HStack Back Button
-            } // VStack Back Button
-        } // ZStack for Map
+        Map(coordinateRegion: $region,
+            annotationItems: processStationNames()) { place in
+            MapMarker(coordinate: place.coordinate, tint: .red)
+        }
+            .ignoresSafeArea()
+        
     }
     
-    func processStationNames() -> Void {
+    func processStationNames() -> [MapLocation] {
+        var stationMapLocations: [MapLocation] = []
         for station in destinationStations {
             getLocationFromName(name: station.name) { coordinates in
                 if let coordinates = coordinates {
-                    region.center = coordinates
                     let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
-                    
-                    self.stationMapLocations.append(stationWithCoordinates)
+                    print(stationWithCoordinates)
+                    stationMapLocations.append(stationWithCoordinates)
                 }
             }
         }
+        print(stationMapLocations)
+        return stationMapLocations
     }
     
     
@@ -84,17 +63,16 @@ struct StationMapView: View {
                 completion(nil)
                 return
             }
-            region.center = location.coordinate
             completion(location.coordinate)
         }
     }
     
 }
 
-    
 
 
-        
+
+
 
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {
