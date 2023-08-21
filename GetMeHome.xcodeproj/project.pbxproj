@@ -14,6 +14,7 @@
 		434D15592A86E6FC00F553D8 /* MapLocation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D15582A86E6FC00F553D8 /* MapLocation.swift */; };
 		434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D155A2A86E71A00F553D8 /* SavedPlaces.swift */; };
 		434D15622A86E86100F553D8 /* EnterLocationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D15612A86E86100F553D8 /* EnterLocationView.swift */; };
+		43CF68732A94129000FFC731 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CF68722A94129000FFC731 /* FormView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		434D15582A86E6FC00F553D8 /* MapLocation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapLocation.swift; sourceTree = "<group>"; };
 		434D155A2A86E71A00F553D8 /* SavedPlaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPlaces.swift; sourceTree = "<group>"; };
 		434D15612A86E86100F553D8 /* EnterLocationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnterLocationView.swift; sourceTree = "<group>"; };
+		43CF68722A94129000FFC731 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -77,6 +79,7 @@
 		434D155C2A86E76300F553D8 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				43CF68722A94129000FFC731 /* FormView.swift */,
 				434D154B2A8663A100F553D8 /* StationMapView.swift */,
 				434D15612A86E86100F553D8 /* EnterLocationView.swift */,
 			);
@@ -170,6 +173,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				43CF68732A94129000FFC731 /* FormView.swift in Sources */,
 				434D15592A86E6FC00F553D8 /* MapLocation.swift in Sources */,
 				434D154C2A8663A100F553D8 /* StationMapView.swift in Sources */,
 				434D154A2A8663A100F553D8 /* GetMeHomeApp.swift in Sources */,
