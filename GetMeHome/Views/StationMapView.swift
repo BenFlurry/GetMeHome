@@ -12,12 +12,13 @@ struct StationMapView: View {
     // THESE ARE HARDCODED FOR NOW
     @Binding var startStation: Station
     @Binding var destinationStations: [Station]
+    @State var stationMapLocations: [MapLocation] = []
     // setup the place marker
     // setup the coordinate region
     @State var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(
-            latitude: Home().lat,
-            longitude: Home().long),
+            latitude: 0,
+            longitude: 0),
         span: MKCoordinateSpan(
             latitudeDelta: Home().zoom,
             longitudeDelta: Home().zoom))
@@ -34,17 +35,18 @@ struct StationMapView: View {
     }
     
     func processStationNames() -> [MapLocation] {
-        var stationMapLocations: [MapLocation] = []
         for station in destinationStations {
             getLocationFromName(name: station.name) { coordinates in
                 if let coordinates = coordinates {
+                    
                     let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
-                    print(stationWithCoordinates)
                     stationMapLocations.append(stationWithCoordinates)
                 }
             }
         }
-        print(stationMapLocations)
+        // problem is that it returns the function before the async requests have come in, resulting in the default being displayed
+        
+        // okay this needs to be in the other file, and run before trying ot make the map. it will have a function trigger here, which only tries to make the map once all the stations have been processed so it doesnt return early.
         return stationMapLocations
     }
     
