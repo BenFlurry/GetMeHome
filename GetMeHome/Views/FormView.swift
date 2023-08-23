@@ -6,10 +6,23 @@
 //
 
 import SwiftUI
+import MapKit
 
 struct FormView: View {
     @Binding var startStation: Station
     @Binding var destinationStations: [Station]
+    @State var stationMapLocations: [MapLocation] = []
+    @State var stationsRecieved: Bool = false
+    @State var region = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(
+            latitude: Home().lat,
+            longitude: Home().long
+        ),
+        span: MKCoordinateSpan(
+            latitudeDelta: Home().zoom,
+            longitudeDelta: Home().zoom)
+    )
+    
     var body: some View {
         NavigationView {
             List {
@@ -41,18 +54,75 @@ struct FormView: View {
                     }
                 } // ToolbarItem
                 ToolbarItem(placement: .bottomBar) {
-                    // possible calculate here, and pass all the info in as its own struct into stationmapview
-                    // need to have a button here, and an if statement, if the processign of the data has finished, then the navigation link will be there, if not then it wont
-                    // navigation link will stay as is like this (except passing in the processed stations), but the button will trigger process stations function
-                    NavigationLink(destination: StationMapView(startStation: $startStation, destinationStations: $destinationStations)) {
+                    Button {
+                        processStationNames()
+                    } label: {
                         Text("Go!")
                             .font(.title)
                             .fontWeight(.bold)
                     }
                     .padding()
+
+                    if stationsRecieved {
+                        NavigationLink(destination: StationMapView(stationMapLocations: stationMapLocations,
+                                                                   region: region),
+                                       isActive: $stationsRecieved,
+                                       label: { EmptyView() }
+                        )
+
+                    }
+                    
+
                 }
             } // toolbar
         } // NavigationView
+    }
+    
+    func processStationNames() -> Void {
+        stationsRecieved = false
+        stationMapLocations = []
+        
+        let dispatchGroup = DispatchGroup()
+        
+        for station in destinationStations {
+            dispatchGroup.enter()
+            getLocationFromName(name: station.name) { coordinates in
+                if let coordinates = coordinates {
+                    let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
+                    stationMapLocations.append(stationWithCoordinates)
+                }
+                dispatchGroup.leave()
+            }
+        }
+        
+        dispatchGroup.notify(queue: .main) {
+            if !stationMapLocations.isEmpty {
+                stationsRecieved = true
+                print("wooooo")
+                print(stationMapLocations)
+                print("Stations Recieved = \(stationsRecieved)")
+            }
+        }
+
+
+    }
+    
+    
+    
+    func getLocationFromName(name: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+        let searchRequest = MKLocalSearch.Request()
+        searchRequest.naturalLanguageQuery = name + " Station"
+        searchRequest.region = region
+        searchRequest.pointOfInterestFilter = MKPointOfInterestFilter(including: [MKPointOfInterestCategory(rawValue: "publicTransport")])
+        
+        let search = MKLocalSearch(request: searchRequest)
+        search.start { response, error in
+            guard let item = response?.mapItems.first, let location = item.placemark.location else {
+                completion(nil)
+                return
+            }
+            completion(location.coordinate)
+        }
     }
 }
 
