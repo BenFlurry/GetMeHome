@@ -22,25 +22,3 @@ struct Data {
         return Station(name: "Great Portland Street")
     }
 }
-
-
-struct EnterLocationView: View {
-    
-    @State var destinationStations: [Station] = Data().getDestinations()
-    @State var startStation: Station = Data().getStart()
-
-    var body: some View {
-        FormView(startStation: $startStation, destinationStations: $destinationStations)
-            .ignoresSafeArea()
-    }
-        
-}
-
-
-
-
-struct EnterLocationView_Previews: PreviewProvider {
-    static var previews: some View {
-        EnterLocationView()
-    }
-}
