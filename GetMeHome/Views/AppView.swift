@@ -94,10 +94,6 @@ struct AppView: View {
                 dispatchGroup.leave()
             }
         }
-        
-        
-        
-        
         dispatchGroup.notify(queue: .main) {
             if !stationMapLocations.isEmpty {
                 stationsRecieved = true
@@ -106,8 +102,6 @@ struct AppView: View {
                 print("Stations Recieved = \(stationsRecieved)")
             }
         }
-
-
     }
     
     
