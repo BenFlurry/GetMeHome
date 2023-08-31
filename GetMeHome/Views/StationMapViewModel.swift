@@ -10,46 +10,34 @@ import MapKit
 
 final class StationMapViewModel: ObservableObject {
     @Published var stationMapLocations: [MapLocation] = []
-    public var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(
-            latitude: Home().lat,
-            longitude: Home().long),
-        span: MKCoordinateSpan(
-            latitudeDelta: Home().zoom,
-            longitudeDelta: Home().zoom))
+    @Published var region = Home().region
+//    @Published var region: MKCoordinateRegion?
     
     
-    func getMapLocations(startStation: Station, destinationStations: [Station]) -> Void {
+    func getMapLocations(startStation: Station, destinationStations: [Station]) async -> Void {
         for station in destinationStations {
-            getLocationFromName(name: station.name) { coordinates in
-                if let coordinates = coordinates {
-                    
-                    let stationWithCoordinates = MapLocation(name: station.name, coordinate: coordinates)
-                    self.stationMapLocations.append(stationWithCoordinates)
-                }
+            let coordinate = await getCoordinateFromStationName(name: station.name)
+            // put on the main thread since the ui has to operate on the main thread when running async
+            DispatchQueue.main.async {
+                self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
+                self.region.center = coordinate
             }
         }
-        // problem is that it returns the function before the async requests have come in, resulting in the default being displayed
-        
-        // okay this needs to be in the other file, and run before trying ot make the map. it will have a function trigger here, which only tries to make the map once all the stations have been processed so it doesnt return early.
     }
     
     
     
-    func getLocationFromName(name: String, completion: @escaping (CLLocationCoordinate2D?) -> Void) {
+    
+    private func getCoordinateFromStationName(name: String) async -> CLLocationCoordinate2D {
         let searchRequest = MKLocalSearch.Request()
         searchRequest.naturalLanguageQuery = name + " Station"
         searchRequest.region = region
         searchRequest.pointOfInterestFilter = MKPointOfInterestFilter(including: [MKPointOfInterestCategory(rawValue: "publicTransport")])
         
-        
-        let search = MKLocalSearch(request: searchRequest)
-        search.start { response, error in
-            guard let item = response?.mapItems.first, let location = item.placemark.location else {
-                completion(nil)
-                return
-            }
-            completion(location.coordinate)
-        }
+        let results = try? await MKLocalSearch(request: searchRequest).start()
+        let item = results?.mapItems.first!
+        let coordinate = (item?.placemark.coordinate)!
+        return coordinate
+     
     }
 }

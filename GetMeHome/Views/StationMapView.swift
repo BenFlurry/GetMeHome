@@ -21,22 +21,19 @@ struct StationMapView: View {
             longitudeDelta: Home().zoom))
     
     @StateObject private var viewModel = StationMapViewModel()
-    // setup the place marker
-    // setup the coordinate region
-
-    
-    //    @State var stationMapLocations: [MapLocation] = []
     
     var body: some View {
-        Map(coordinateRegion: $region,
+        Map(coordinateRegion: $viewModel.region,
             annotationItems: viewModel.stationMapLocations) { place in
             MapMarker(coordinate: place.coordinate, tint: .red)
         }
             .ignoresSafeArea()
-            .onAppear { viewModel.getMapLocations(startStation: startStation, destinationStations: destinationStations) }
-        
+            .task {
+                await viewModel.getMapLocations(startStation: startStation, destinationStations: destinationStations)
+                
+            }
+            
     }
-    
     
     
 }
