@@ -41,9 +41,6 @@ struct FormView: View {
                     }
                 } // ToolbarItem
                 ToolbarItem(placement: .bottomBar) {
-                    // possible calculate here, and pass all the info in as its own struct into stationmapview
-                    // need to have a button here, and an if statement, if the processign of the data has finished, then the navigation link will be there, if not then it wont
-                    // navigation link will stay as is like this (except passing in the processed stations), but the button will trigger process stations function
                     NavigationLink(destination: StationMapView(startStation: $startStation, destinationStations: $destinationStations)) {
                         Text("Go!")
                             .font(.title)

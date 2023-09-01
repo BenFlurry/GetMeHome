@@ -26,11 +26,15 @@ struct StationMapView: View {
         Map(coordinateRegion: $viewModel.region,
             annotationItems: viewModel.stationMapLocations) { place in
             MapMarker(coordinate: place.coordinate, tint: .red)
+            
         }
+
             .ignoresSafeArea()
+//            .task {
+//                await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
+//            }
             .task {
-                await viewModel.getMapLocations(startStation: startStation, destinationStations: destinationStations)
-                
+                await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
             }
             
     }
