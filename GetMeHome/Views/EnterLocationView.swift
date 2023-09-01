@@ -15,8 +15,12 @@ struct Station: Identifiable {
 
 struct Data {
     func getDestinations() -> [Station] {
-        return [Station(name: "Amersham"),
-                Station(name: "Chalfont & Latimer")]
+        return [
+            Station(name: "Amersham"),
+            Station(name: "Chalfont & Latimer"),
+            Station(name: "Beaconsfield"),
+            Station(name: "High Wycombe")
+        ]
     }
     func getStart() -> Station {
         return Station(name: "Great Portland Street")
@@ -28,12 +32,12 @@ struct EnterLocationView: View {
     
     @State var destinationStations: [Station] = Data().getDestinations()
     @State var startStation: Station = Data().getStart()
-
+    
     var body: some View {
         FormView(startStation: $startStation, destinationStations: $destinationStations)
             .ignoresSafeArea()
     }
-        
+    
 }
 
 

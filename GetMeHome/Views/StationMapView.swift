@@ -49,13 +49,19 @@ struct MapView: UIViewRepresentable {
 //        viewModel.getPolyline(startStation: startStation!, destinationStations: destinationStations)
         let map = MKMapView()
         map.region = viewModel.region
-        viewModel.getMapCoordinates(startStation: startStation!, destinationStations: destinationStations) { locations in
-            for location in locations {
-                print(location.name)
-                let marker = MKPlacemark(coordinate: location.coordinate)
-                map.addAnnotation(marker)
+//        viewModel.getMapCoordinates(startStation: startStation!, destinationStations: destinationStations) { locations in
+//            for location in locations {
+//                print(location.name)
+//                let marker = MKPlacemark(coordinate: location.coordinate)
+//                map.addAnnotation(marker)
+//            }
+//        }
+        
+        viewModel.getPolyline(startStation: startStation!, destinationStations: destinationStations, completion: { polylines in
+            for polyline in polylines {
+                map.addOverlay(polyline)
             }
-        }
+        })
     
         return map
     }
