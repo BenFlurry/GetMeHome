@@ -18,60 +18,41 @@ final class StationMapViewModel: ObservableObject {
     private var destinationPlacemarks: [MKPlacemark] = []
     
     
-    func getMapCoordinates(startStation: Station, destinationStations: [Station]) -> Void {
+    func getMapCoordinates(startStation: Station, destinationStations: [Station], completion: @escaping ([MapLocation]) -> Void) {
         for station in destinationStations {
             getCoordinateFromStationName(name: station.name) { coordinate in
                 self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
                 self.region.center = coordinate
                 self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
-                
             }
             // put on the main thread since the ui has to operate on the main thread when running async
         }
-//        let coordinate = await getCoordinateFromStationName(name: startStation.name)
-//        DispatchQueue.main.async {
-//            self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate))
-//            self.region.center = coordinate
-//            self.startPlacemark = MKPlacemark(coordinate: coordinate)
-//        }
         getCoordinateFromStationName(name: startStation.name) { coordinate in
             self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate))
             self.region.center = coordinate
             self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
+            completion(self.stationMapLocations)
             
         }
-        
+
     }
     
-    func getPolyline(startStation: Station, destinationStations: [Station]) -> Void {
-        getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
-        let request = MKDirections.Request()
-        request.source = MKMapItem(placemark: startPlacemark!)
-        request.destination = MKMapItem(placemark: destinationPlacemarks.first!)
-        request.transportType = .transit
-        request.requestsAlternateRoutes = true
-        
-        let directions = MKDirections(request: request)
-//        guard let eta = try? await directions.calculateETA() else { return }
-//        let time = eta.expectedTravelTime
-//        DispatchQueue.main.async {
-//            self.etaTime.append(time)
-//        }
-        
-//        let response = try? await directions.calculate()
-//        guard let response = try? await directions.calculate() else { return }
-//        DispatchQueue.main.async {
+//    func getPolyline(startStation: Station, destinationStations: [Station]) -> Void {
+//        getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
+//        let request = MKDirections.Request()
+//        request.source = MKMapItem(placemark: startPlacemark!)
+//        request.destination = MKMapItem(placemark: destinationPlacemarks.first!)
+//        request.transportType = .transit
+//        request.requestsAlternateRoutes = true
+//
+//        let directions = MKDirections(request: request)
+//        directions.calculate(completionHandler: { (response, error) in
+//            guard let response = response else { return }
 //            for route in response.routes {
 //                self.routePolylines.append(route.polyline)
 //            }
-//        }
-        directions.calculate(completionHandler: { (response, error) in
-            guard let response = response else { return }
-            for route in response.routes {
-                self.routePolylines.append(route.polyline)
-            }
-        })
-    }
+//        })
+//    }
     
     
     

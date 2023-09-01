@@ -34,7 +34,7 @@ struct StationMapView: View {
 //                await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
 //            }
         MapView(startStation: startStation, destinationStations: destinationStations)
-
+            .ignoresSafeArea()
     }
     
     
@@ -49,14 +49,14 @@ struct MapView: UIViewRepresentable {
 //        viewModel.getPolyline(startStation: startStation!, destinationStations: destinationStations)
         let map = MKMapView()
         map.region = viewModel.region
-        viewModel.getMapCoordinates(startStation: startStation!, destinationStations: destinationStations)
-//        for line in viewModel.routePolylines {
-//            map.addOverlay(line)
-//        }
-        for station in viewModel.stationMapLocations {
-            let marker = MapMarker(coordinate: <#T##CLLocationCoordinate2D#>)
-            map.a
+        viewModel.getMapCoordinates(startStation: startStation!, destinationStations: destinationStations) { locations in
+            for location in locations {
+                print(location.name)
+                let marker = MKPlacemark(coordinate: location.coordinate)
+                map.addAnnotation(marker)
+            }
         }
+    
         return map
     }
     
