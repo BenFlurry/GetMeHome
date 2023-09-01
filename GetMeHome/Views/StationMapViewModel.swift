@@ -19,23 +19,26 @@ final class StationMapViewModel: ObservableObject {
     
     
     func getMapCoordinates(startStation: Station, destinationStations: [Station], completion: @escaping ([MapLocation]) -> Void) {
-        for station in destinationStations {
+        var stations = destinationStations
+        stations.append(startStation)
+        for station in stations {
             getCoordinateFromStationName(name: station.name) { coordinate in
                 self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
                 self.region.center = coordinate
                 self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
+                completion(self.stationMapLocations)
             }
             // put on the main thread since the ui has to operate on the main thread when running async
         }
-        getCoordinateFromStationName(name: startStation.name) { coordinate in
-            self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate))
-            self.region.center = coordinate
-            self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
-            completion(self.stationMapLocations)
-            
-        }
-
+//        getCoordinateFromStationName(name: startStation.name) { coordinate in
+//            self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate))
+//            self.region.center = coordinate
+//            self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
+//            completion(self.stationMapLocations)
+//
     }
+
+    
     
 //    func getPolyline(startStation: Station, destinationStations: [Station]) -> Void {
 //        getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
