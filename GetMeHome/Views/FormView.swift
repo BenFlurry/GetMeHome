@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct FormView: View {
-    @Binding var startStation: Station
-    @Binding var destinationStations: [Station]
+    @State var startStation: Station
+    @State var destinationStations: [Station]
     var body: some View {
         NavigationView {
             List {

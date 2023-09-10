@@ -10,7 +10,7 @@ import MapKit
 
 final class StationMapViewModel: ObservableObject {
     @Published var stationMapLocations: [MapLocation] = []
-    @Published var region = Home().region
+    @Published var region = MKCoordinateRegion.home
     @Published var routePolylines: [MKPolyline] = []
     @Published var etaTime: [TimeInterval] = []
 //    @Published var region: MKCoordinateRegion?

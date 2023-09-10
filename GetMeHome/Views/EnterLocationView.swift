@@ -30,7 +30,7 @@ struct EnterLocationView: View {
     @State var startStation: Station = Data().getStart()
 
     var body: some View {
-        FormView(startStation: $startStation, destinationStations: $destinationStations)
+        FormView(startStation: startStation, destinationStations: destinationStations)
             .ignoresSafeArea()
     }
         

@@ -18,3 +18,15 @@ struct Home {
         span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
 }
 
+extension MKCoordinateRegion {
+    static let home = MKCoordinateRegion(
+        center: .home,
+        span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5)
+    )
+}
+
+extension CLLocationCoordinate2D {
+    static let home = CLLocationCoordinate2D(latitude: 51.658539, longitude: -0.703750)
+}
+
+

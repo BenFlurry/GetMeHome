@@ -12,13 +12,7 @@ struct StationMapView: View {
     // THESE ARE HARDCODED FOR NOW
     @Binding var startStation: Station
     @Binding var destinationStations: [Station]
-    @State var region = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(
-            latitude: Home().lat,
-            longitude: Home().long),
-        span: MKCoordinateSpan(
-            latitudeDelta: Home().zoom,
-            longitudeDelta: Home().zoom))
+    @State var region = MKCoordinateRegion.home
     
     @StateObject private var viewModel = StationMapViewModel()
     
@@ -27,16 +21,12 @@ struct StationMapView: View {
             annotationItems: viewModel.stationMapLocations) { place in
             MapMarker(coordinate: place.coordinate, tint: .red)
             
-        }
-
-            .ignoresSafeArea()
-//            .task {
-//                await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
-//            }
-            .task {
-                await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
-            }
             
+        }
+            .ignoresSafeArea()
+            .task { await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations) }
+        
+        
     }
     
     
