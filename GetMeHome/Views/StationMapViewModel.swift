@@ -39,28 +39,41 @@ final class StationMapViewModel: ObservableObject {
     
     func getMapDirections(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
+        print("a")
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: startPlacemark!)
-        request.destination = MKMapItem(placemark: destinationPlacemarks.first!)
+        
+        
+        //        print(startPlacemark!.description)
+        //        print("")
+        //        for placemark in destinationPlacemarks {
+        //            print(placemark.description)
+        //        }
+        
         request.transportType = .transit
         request.requestsAlternateRoutes = true
-        
-        let directions = MKDirections(request: request)
-        guard let eta = try? await directions.calculateETA() else { return }
-        let time = eta.expectedTravelTime
-        DispatchQueue.main.async {
+        for placemark in destinationPlacemarks {
+            request.destination = MKMapItem(placemark: placemark)
+            let directionsRequest = MKDirections(request: request)
+            guard let eta = try? await directionsRequest.calculateETA() else { return }
+            let time = eta.expectedTravelTime
+            
+            print(time.description)
             self.etaTime.append(time)
-        }
-        
-        //        let response = try? await directions.calculate()
-        guard let response = try? await directions.calculate() else { return }
-        DispatchQueue.main.async {
-            for route in response.routes {
-                self.routePolylines.append(route)
-                print(route)
+            
+            guard let response = try? await directionsRequest.calculate() else {
+                print("early return")
+                return
             }
+            
+            print("b")
+            let route = response.routes.first!
+            self.routePolylines.append(route)
+            print(route)
+            
         }
     }
+    
     
     private func getCoordinateFromStationName(name: String) async -> CLLocationCoordinate2D {
         let searchRequest = MKLocalSearch.Request()
