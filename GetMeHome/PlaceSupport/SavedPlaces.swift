@@ -37,7 +37,9 @@ struct Station: Identifiable, Equatable {
 struct Data {
     func getDestinations() -> [Station] {
         return [Station(name: "Amersham"),
-                Station(name: "Chalfont & Latimer")]
+                Station(name: "Chalfont & Latimer"),
+                Station(name: "High Wycombe"),
+                Station(name: "Beaconsfield")]
     }
     func getStart() -> Station {
         return Station(name: "Great Portland Street")

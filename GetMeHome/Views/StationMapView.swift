@@ -18,13 +18,13 @@ struct StationMapView: View {
     
     var body: some View {
         Map {
-            ForEach(viewModel.stationMapLocations) { station in
-                Marker(station.name, coordinate: station.coordinate)
-            }
+//            ForEach(viewModel.stationMapLocations) { station in
+//                Marker(station.name, coordinate: station.coordinate)
+//            }
 //            ForEach(viewModel.routePolylines, id: \.self) { route in
 //                MapPolyline(route.polyline)
 //            }
-
+            Marker("home", coordinate: .home)
             
         }
         //        .ignoresSafeArea()
