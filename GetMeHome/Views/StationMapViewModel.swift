@@ -12,11 +12,13 @@ import MapKit
 final class StationMapViewModel: ObservableObject {
     @Published var stationMapLocations: [MapLocation] = []
     @Published var region = MKCoordinateRegion.home
-    @Published var routePolylines: [MKRoute] = []
+    @Published var routeLines: [MKRoute] = []
     @Published var etaTime: [TimeInterval] = []
-    //    @Published var region: MKCoordinateRegion?
+    
     private var startPlacemark: MKPlacemark?
     private var destinationPlacemarks: [MKPlacemark] = []
+    
+    private var numOfRequests: Int = 0
     
     
     func getMapCoordinates(startStation: Station, destinationStations: [Station]) async -> Void {
@@ -36,29 +38,36 @@ final class StationMapViewModel: ObservableObject {
     
     func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
-        print("a")
-        let request = MKDirections.Request()
-        request.source = MKMapItem(placemark: startPlacemark!)
-        request.transportType = .transit
-        request.requestsAlternateRoutes = true
-        
+
         for placemark in destinationPlacemarks {
+            print("starting request")
+            let request = MKDirections.Request()
+            request.source = MKMapItem(placemark: startPlacemark!)
+            request.source!.name = "Great Portland Street"
+            request.transportType = .any
+            request.requestsAlternateRoutes = false
             request.destination = MKMapItem(placemark: placemark)
+
+            request.destination!.name = "Amersham"
+            print("name=\(request.destination!.name ?? "nil")")
             let directionsRequest = MKDirections(request: request)
-            guard let eta = try? await directionsRequest.calculateETA() else { return }
-            let time = eta.expectedTravelTime/60
-            print(time.description)
-            self.etaTime.append(time)
             
-            guard let response = try? await directionsRequest.calculate() else {
-                print("early return")
-                return
+            numOfRequests+=1
+            print(numOfRequests)
+
+            do {
+                let response = try await directionsRequest.calculate()
+                print("request recieved")
+                let route = response.routes.first!
+                self.etaTime.append(route.expectedTravelTime)
+                self.routeLines.append(route)
+                
+            } catch {
+                print("Error calculating route: \(error.localizedDescription)")
+                
+                
             }
             
-            print("b")
-            let route = response.routes.first!
-            self.routePolylines.append(route)
-            print(route)
             
         }
     }
@@ -72,6 +81,8 @@ final class StationMapViewModel: ObservableObject {
         
         // might wanna make this a guard statement
         let results = try? await MKLocalSearch(request: searchRequest).start()
+        numOfRequests+=1
+        print(numOfRequests)
         let item = results?.mapItems.first!
         let coordinate = (item?.placemark.coordinate)!
         return coordinate

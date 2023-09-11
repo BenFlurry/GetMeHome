@@ -7,6 +7,7 @@
 
 import Foundation
 import MapKit
+import _MapKit_SwiftUI
 
 struct Home {
     var lat: Double = 51.658539

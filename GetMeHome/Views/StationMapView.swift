@@ -41,7 +41,7 @@ struct StationMapView: View {
                 MapCompass()
                 MapPitchToggle()
             }
-            ForEach(viewModel.routePolylines, id: \.self) { route in
+            ForEach(viewModel.routeLines, id: \.self) { route in
                 Text(route.polyline.description)
             }
 //            ForEach(viewModel.stationMapLocations) { station in
