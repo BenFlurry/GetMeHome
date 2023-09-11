@@ -51,12 +51,19 @@ struct MapLocation: Identifiable {
     let id = UUID()
     let name: String
     let coordinate: CLLocationCoordinate2D
+    var isStart: Bool = false
     
-    init(name: String, lat: Double, long: Double) {
+    init(name: String, lat: Double, long: Double, isStart: Bool) {
         self.name = name
         self.coordinate = CLLocationCoordinate2D(
             latitude: lat,
             longitude: long)
+    }
+    
+    init(name: String, coordinate: CLLocationCoordinate2D, isStart: Bool) {
+        self.name = name
+        self.coordinate = coordinate
+        self.isStart = true
     }
     
     init(name: String, coordinate: CLLocationCoordinate2D) {

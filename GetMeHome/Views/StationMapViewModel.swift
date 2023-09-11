@@ -22,42 +22,31 @@ final class StationMapViewModel: ObservableObject {
     func getMapCoordinates(startStation: Station, destinationStations: [Station]) async -> Void {
         for station in destinationStations {
             let coordinate = await getCoordinateFromStationName(name: station.name)
-            // put on the main thread since the ui has to operate on the main thread when running async
             
             self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
-            self.region.center = coordinate
             self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
             
         }
         let coordinate = await getCoordinateFromStationName(name: startStation.name)
         
-        self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate))
-        self.region.center = coordinate
+        self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate, isStart: true))
         self.startPlacemark = MKPlacemark(coordinate: coordinate)
         
     }
     
-    func getMapDirections(startStation: Station, destinationStations: [Station]) async -> Void {
+    func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
         print("a")
         let request = MKDirections.Request()
         request.source = MKMapItem(placemark: startPlacemark!)
-        
-        
-        //        print(startPlacemark!.description)
-        //        print("")
-        //        for placemark in destinationPlacemarks {
-        //            print(placemark.description)
-        //        }
-        
         request.transportType = .transit
         request.requestsAlternateRoutes = true
+        
         for placemark in destinationPlacemarks {
             request.destination = MKMapItem(placemark: placemark)
             let directionsRequest = MKDirections(request: request)
             guard let eta = try? await directionsRequest.calculateETA() else { return }
-            let time = eta.expectedTravelTime
-            
+            let time = eta.expectedTravelTime/60
             print(time.description)
             self.etaTime.append(time)
             

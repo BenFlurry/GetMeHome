@@ -20,7 +20,13 @@ struct StationMapView: View {
         VStack {
             Map {
                 ForEach(viewModel.stationMapLocations) { station in
-                    Marker(station.name, coordinate: station.coordinate)
+                    if station.isStart {
+                        Marker(station.name, coordinate: station.coordinate)
+                            .tint(.blue)
+                    } else {
+                        Marker(station.name, coordinate: station.coordinate)
+                            .tint(.red)
+                    }
                 }
                 
 //                ForEach(viewModel.routePolylines, id: \.self) { route in
@@ -29,7 +35,7 @@ struct StationMapView: View {
                 
             }
             .ignoresSafeArea()
-            .task { await viewModel.getMapDirections(startStation: startStation, destinationStations: destinationStations) }
+            .task { await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations) }
             .mapStyle(.standard(pointsOfInterest: .including(MKPointOfInterestCategory(rawValue: "publicTransport"))))
             .mapControls {
                 MapCompass()
