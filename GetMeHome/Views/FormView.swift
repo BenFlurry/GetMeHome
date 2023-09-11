@@ -7,9 +7,11 @@
 
 import SwiftUI
 
+@available(iOS 17.0, *)
 struct FormView: View {
-    @State var startStation: Station
-    @State var destinationStations: [Station]
+    @State var destinationStations: [Station] = Data().getDestinations()
+    @State var startStation: Station = Data().getStart()
+    
     var body: some View {
         NavigationView {
             List {

@@ -8,39 +8,5 @@
 import SwiftUI
 import MapKit
 
-struct Station: Identifiable {
-    var id = UUID()
-    var name: String
-}
-
-struct Data {
-    func getDestinations() -> [Station] {
-        return [Station(name: "Amersham"),
-                Station(name: "Chalfont & Latimer")]
-    }
-    func getStart() -> Station {
-        return Station(name: "Great Portland Street")
-    }
-}
 
 
-struct EnterLocationView: View {
-    
-    @State var destinationStations: [Station] = Data().getDestinations()
-    @State var startStation: Station = Data().getStart()
-
-    var body: some View {
-        FormView(startStation: startStation, destinationStations: destinationStations)
-            .ignoresSafeArea()
-    }
-        
-}
-
-
-
-
-struct EnterLocationView_Previews: PreviewProvider {
-    static var previews: some View {
-        EnterLocationView()
-    }
-}

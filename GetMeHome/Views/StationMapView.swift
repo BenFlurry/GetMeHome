@@ -8,34 +8,35 @@
 import SwiftUI
 import MapKit
 
+@available(iOS 17.0, *)
 struct StationMapView: View {
     // THESE ARE HARDCODED FOR NOW
     @Binding var startStation: Station
     @Binding var destinationStations: [Station]
-    @State var region = MKCoordinateRegion.home
     
     @StateObject private var viewModel = StationMapViewModel()
     
     var body: some View {
-        Map(coordinateRegion: $viewModel.region,
-            annotationItems: viewModel.stationMapLocations) { place in
-            MapMarker(coordinate: place.coordinate, tint: .red)
-            
+        Map {
+            ForEach(viewModel.stationMapLocations) { station in
+                Marker(station.name, coordinate: station.coordinate)
+            }
+//            ForEach(viewModel.routePolylines, id: \.self) { route in
+//                MapPolyline(route.polyline)
+//            }
+
             
         }
-            .ignoresSafeArea()
-            .task { await viewModel.getMapCoordinates(startStation: startStation, destinationStations: destinationStations) }
-        
+        //        .ignoresSafeArea()
+        //        .task { await viewModel.getMapDirections(startStation: startStation, destinationStations: destinationStations) }
+        //                    .mapStyle(.standard(pointsOfInterest: .including(MKPointOfInterestCategory(rawValue: "publicTransport"))))
+        //                    .mapControls {
+        //                        MapCompass()
+        //                        MapPitchToggle()
+        //                    }
         
     }
-    
-    
 }
-
-
-
-
-
 
 //struct ContentView_Previews: PreviewProvider {
 //    static var previews: some View {
