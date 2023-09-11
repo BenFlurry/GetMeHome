@@ -18,8 +18,6 @@ final class StationMapViewModel: ObservableObject {
     private var startPlacemark: MKPlacemark?
     private var destinationPlacemarks: [MKPlacemark] = []
     
-    private var numOfRequests: Int = 0
-    
     
     func getMapCoordinates(startStation: Station, destinationStations: [Station]) async -> Void {
         for station in destinationStations {
@@ -38,37 +36,23 @@ final class StationMapViewModel: ObservableObject {
     
     func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
-
+        
         for placemark in destinationPlacemarks {
-            print("starting request")
             let request = MKDirections.Request()
             request.source = MKMapItem(placemark: startPlacemark!)
-            request.source!.name = "Great Portland Street"
-            request.transportType = .any
+
+            request.transportType = .automobile
             request.requestsAlternateRoutes = false
             request.destination = MKMapItem(placemark: placemark)
+            
 
-            request.destination!.name = "Amersham"
-            print("name=\(request.destination!.name ?? "nil")")
             let directionsRequest = MKDirections(request: request)
             
-            numOfRequests+=1
-            print(numOfRequests)
+            guard let response = try? await directionsRequest.calculate() else { return }
+            let route = response.routes.first!
+            self.etaTime.append(route.expectedTravelTime)
+            self.routeLines.append(route)
 
-            do {
-                let response = try await directionsRequest.calculate()
-                print("request recieved")
-                let route = response.routes.first!
-                self.etaTime.append(route.expectedTravelTime)
-                self.routeLines.append(route)
-                
-            } catch {
-                print("Error calculating route: \(error.localizedDescription)")
-                
-                
-            }
-            
-            
         }
     }
     
@@ -81,8 +65,7 @@ final class StationMapViewModel: ObservableObject {
         
         // might wanna make this a guard statement
         let results = try? await MKLocalSearch(request: searchRequest).start()
-        numOfRequests+=1
-        print(numOfRequests)
+
         let item = results?.mapItems.first!
         let coordinate = (item?.placemark.coordinate)!
         return coordinate

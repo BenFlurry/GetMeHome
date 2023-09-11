@@ -15,10 +15,11 @@ struct StationMapView: View {
     @Binding var destinationStations: [Station]
     
     @StateObject private var viewModel = StationMapViewModel()
+    @State private var cameraPosition: MapCameraPosition = .region(.home)
     
     var body: some View {
         VStack {
-            Map {
+            Map() {
                 ForEach(viewModel.stationMapLocations) { station in
                     if station.isStart {
                         Marker(station.name, coordinate: station.coordinate)
@@ -28,22 +29,25 @@ struct StationMapView: View {
                             .tint(.red)
                     }
                 }
-                
-//                ForEach(viewModel.routePolylines, id: \.self) { route in
-//                    MapPolyline(route.polyline)
-//                }
+
+                ForEach(viewModel.routeLines, id: \.self) { route in
+                    MapPolyline(route.polyline)
+                        .stroke(.blue, lineWidth: 5)
+                        
+                }
                 
             }
             .ignoresSafeArea()
             .task { await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations) }
-            .mapStyle(.standard(pointsOfInterest: .including(MKPointOfInterestCategory(rawValue: "publicTransport"))))
+            .mapStyle(.standard(emphasis: .muted,
+                                pointsOfInterest: .including(MKPointOfInterestCategory(rawValue: "publicTransport"))))
             .mapControls {
                 MapCompass()
                 MapPitchToggle()
             }
-            ForEach(viewModel.routeLines, id: \.self) { route in
-                Text(route.polyline.description)
-            }
+//            ForEach(viewModel.routeLines, id: \.self) { route in
+//                Text(route.polyline.description)
+//            }
 //            ForEach(viewModel.stationMapLocations) { station in
 //                Text(station.name)
 //            }
