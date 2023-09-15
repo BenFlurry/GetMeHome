@@ -7,7 +7,6 @@
 
 import Foundation
 import MapKit
-import _MapKit_SwiftUI
 
 struct Home {
     var lat: Double = 51.658539
@@ -53,6 +52,7 @@ struct MapLocation: Identifiable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     var isStart: Bool = false
+    var etaTime: TimeInterval?
     
     init(name: String, lat: Double, long: Double, isStart: Bool) {
         self.name = name
@@ -65,6 +65,7 @@ struct MapLocation: Identifiable {
         self.name = name
         self.coordinate = coordinate
         self.isStart = true
+
     }
     
     init(name: String, coordinate: CLLocationCoordinate2D) {

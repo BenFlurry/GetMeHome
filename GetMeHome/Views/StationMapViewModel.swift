@@ -12,50 +12,54 @@ import MapKit
 final class StationMapViewModel: ObservableObject {
     @Published var stationMapLocations: [MapLocation] = []
     @Published var region = MKCoordinateRegion.home
-    @Published var routeLines: [MKRoute] = []
-    @Published var etaTime: [TimeInterval] = []
+//    @Published var routeLines: [MKRoute] = []
+//    @Published var etaTime: [MapLocation] = []
     
-    private var startPlacemark: MKPlacemark?
-    private var destinationPlacemarks: [MKPlacemark] = []
+    private var startMapLocation: MapLocation?
+    @Published var destinationMapLocations: [MapLocation] = []
     
     
     func getMapCoordinates(startStation: Station, destinationStations: [Station]) async -> Void {
         for station in destinationStations {
             let coordinate = await getCoordinateFromStationName(name: station.name)
-            
             self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
-            self.destinationPlacemarks.append(MKPlacemark(coordinate: coordinate))
-            
+            self.destinationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
         }
         let coordinate = await getCoordinateFromStationName(name: startStation.name)
         
         self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate, isStart: true))
-        self.startPlacemark = MKPlacemark(coordinate: coordinate)
+        self.startMapLocation = MapLocation(name: startStation.name, coordinate: coordinate)
         
     }
     
     func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
         
-        for placemark in destinationPlacemarks {
+        for var location in destinationMapLocations {
+            print("heree")
             let request = MKDirections.Request()
-            request.source = MKMapItem(placemark: startPlacemark!)
-
-            request.transportType = .automobile
-            request.requestsAlternateRoutes = false
-            request.destination = MKMapItem(placemark: placemark)
+            request.source = MKMapItem(placemark: MKPlacemark(coordinate: startMapLocation!.coordinate))
             
-
+            // need to request multiple routes, and see which one is the fastest
+            
+            request.transportType = .transit
+            request.requestsAlternateRoutes = false
+            request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
+            // need to offset by an hour the time due to daylight saving time
+            
             let directionsRequest = MKDirections(request: request)
             
-            guard let response = try? await directionsRequest.calculate() else { return }
-            let route = response.routes.first!
-            self.etaTime.append(route.expectedTravelTime)
-            self.routeLines.append(route)
+            print("pre-request")
+            guard let response = try? await directionsRequest.calculateETA() else { return }
+            let eta = response.expectedTravelTime/60
+
+            location.etaTime = eta
+            print("\(eta.description), \(location.name), \(response.expectedDepartureDate.description)")
+//            self.etaTime.append(location)
+//            self.routeLines.append(route)
 
         }
     }
-    
     
     private func getCoordinateFromStationName(name: String) async -> CLLocationCoordinate2D {
         let searchRequest = MKLocalSearch.Request()

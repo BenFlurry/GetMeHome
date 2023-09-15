@@ -17,40 +17,26 @@ struct StationMapView: View {
     @StateObject private var viewModel = StationMapViewModel()
     @State private var cameraPosition: MapCameraPosition = .region(.home)
     
+    
     var body: some View {
         VStack {
-            Map() {
-                ForEach(viewModel.stationMapLocations) { station in
-                    if station.isStart {
-                        Marker(station.name, coordinate: station.coordinate)
-                            .tint(.blue)
-                    } else {
-                        Marker(station.name, coordinate: station.coordinate)
-                            .tint(.red)
+            Map(position: $cameraPosition) {
+                ForEach(viewModel.destinationMapLocations) { station in
+                    Annotation(station.name, coordinate: station.coordinate) {
+                        ZStack() {
+                            Text(station.etaTime?.description ?? "Calculating")
+                        }
                     }
+                    
+                    
+                    
                 }
-
-                ForEach(viewModel.routeLines, id: \.self) { route in
-                    MapPolyline(route.polyline)
-                        .stroke(.blue, lineWidth: 5)
-                        
-                }
-                
             }
             .ignoresSafeArea()
-            .task { await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations) }
+            .onAppear { Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)} }
             .mapStyle(.standard(emphasis: .muted,
-                                pointsOfInterest: .including(MKPointOfInterestCategory(rawValue: "publicTransport"))))
-            .mapControls {
-                MapCompass()
-                MapPitchToggle()
-            }
-//            ForEach(viewModel.routeLines, id: \.self) { route in
-//                Text(route.polyline.description)
-//            }
-//            ForEach(viewModel.stationMapLocations) { station in
-//                Text(station.name)
-//            }
+                                pointsOfInterest: .including([MKPointOfInterestCategory(rawValue: "publicTransport")])))
+            
         }
         
     }
