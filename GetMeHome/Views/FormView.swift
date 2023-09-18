@@ -9,8 +9,9 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct FormView: View {
-    @State var destinationStations: [Station] = Data().getDestinations()
-    @State var startStation: Station = Data().getStart()
+    @Binding var destinationStations: [Station]
+    @Binding var startStation: Station 
+    @Binding var show: Bool
     
     var body: some View {
         NavigationView {
@@ -43,7 +44,9 @@ struct FormView: View {
                     }
                 } // ToolbarItem
                 ToolbarItem(placement: .bottomBar) {
-                    NavigationLink(destination: StationMapView(startStation: $startStation, destinationStations: $destinationStations)) {
+                    Button {
+                        show.toggle()
+                    } label: {
                         Text("Go!")
                             .font(.title)
                             .fontWeight(.bold)
