@@ -13,6 +13,7 @@
 		434D15512A8663A200F553D8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434D15502A8663A200F553D8 /* Preview Assets.xcassets */; };
 		434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D155A2A86E71A00F553D8 /* SavedPlaces.swift */; };
 		43634F532A9CFE5600EF0963 /* StationMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */; };
+		43BB795B2AB86F5800BFFF27 /* StationDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB795A2AB86F5800BFFF27 /* StationDetails.swift */; };
 		43CF68732A94129000FFC731 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CF68722A94129000FFC731 /* FormView.swift */; };
 /* End PBXBuildFile section */
 
@@ -24,6 +25,7 @@
 		434D15502A8663A200F553D8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		434D155A2A86E71A00F553D8 /* SavedPlaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPlaces.swift; sourceTree = "<group>"; };
 		43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationMapViewModel.swift; sourceTree = "<group>"; };
+		43BB795A2AB86F5800BFFF27 /* StationDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetails.swift; sourceTree = "<group>"; };
 		43CF68722A94129000FFC731 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -80,6 +82,7 @@
 				43CF68722A94129000FFC731 /* FormView.swift */,
 				434D154B2A8663A100F553D8 /* StationMapView.swift */,
 				43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */,
+				43BB795A2AB86F5800BFFF27 /* StationDetails.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -173,6 +176,7 @@
 				43CF68732A94129000FFC731 /* FormView.swift in Sources */,
 				434D154C2A8663A100F553D8 /* StationMapView.swift in Sources */,
 				434D154A2A8663A100F553D8 /* GetMeHomeApp.swift in Sources */,
+				43BB795B2AB86F5800BFFF27 /* StationDetails.swift in Sources */,
 				43634F532A9CFE5600EF0963 /* StationMapViewModel.swift in Sources */,
 				434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */,
 			);

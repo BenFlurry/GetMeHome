@@ -48,7 +48,7 @@ struct FormView: View {
                             .font(.title)
                             .fontWeight(.bold)
                     }
-                    .padding()
+//                    .padding()
                 }
             } // toolbar
         } // NavigationView

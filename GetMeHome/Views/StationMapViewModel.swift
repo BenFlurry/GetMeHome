@@ -36,7 +36,7 @@ final class StationMapViewModel: ObservableObject {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
         
         for var location in destinationMapLocations {
-            print("heree")
+         
             let request = MKDirections.Request()
             request.source = MKMapItem(placemark: MKPlacemark(coordinate: startMapLocation!.coordinate))
             
@@ -45,13 +45,18 @@ final class StationMapViewModel: ObservableObject {
             request.transportType = .transit
             request.requestsAlternateRoutes = false
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
-            // need to offset by an hour the time due to daylight saving time
+            request.departureDate = .now.advanced(by: 3600)
             
+
+            
+            // need to add checking if the route is the fastest based off of arrival time
             let directionsRequest = MKDirections(request: request)
             
-            print("pre-request")
+            
             guard let response = try? await directionsRequest.calculateETA() else { return }
+            
             let eta = response.expectedTravelTime/60
+            
 
             location.etaTime = eta
             print("\(eta.description), \(location.name), \(response.expectedDepartureDate.description)")

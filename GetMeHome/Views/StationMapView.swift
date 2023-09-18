@@ -16,30 +16,33 @@ struct StationMapView: View {
     
     @StateObject private var viewModel = StationMapViewModel()
     @State private var cameraPosition: MapCameraPosition = .region(.home)
+    @State private var mapSelection: MKMapItem?
+    @State private var showDetails: Bool = false
+    
     
     
     var body: some View {
-        VStack {
-            Map(position: $cameraPosition) {
-                ForEach(viewModel.destinationMapLocations) { station in
-                    Annotation(station.name, coordinate: station.coordinate) {
-                        ZStack() {
-                            Text(station.etaTime?.description ?? "Calculating")
-                        }
-                    }
-                    
-                    
-                    
-                }
+        Map(position: $cameraPosition, selection: $mapSelection) {
+            ForEach(viewModel.destinationMapLocations) { station in
+                Marker(station.name, coordinate: station.coordinate)
             }
-            .ignoresSafeArea()
-            .onAppear { Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)} }
-            .mapStyle(.standard(emphasis: .muted,
-                                pointsOfInterest: .including([MKPointOfInterestCategory(rawValue: "publicTransport")])))
-            
+            Marker("Home", coordinate: .home)
         }
-        
+        .ignoresSafeArea(.all)
+        .onAppear { Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)} }
+        .mapStyle(.standard(
+            pointsOfInterest: .including([MKPointOfInterestCategory(rawValue: "publicTransport")])))
+        .onChange(of: mapSelection, { oldValue, newValue in
+            print(mapSelection?.description ?? "Nothing Selected")
+            showDetails = newValue != nil
+        })
+        .sheet(isPresented: $showDetails, content: {
+            StationDetails(selection: $mapSelection, show: $showDetails)
+                .presentationDetents([.height(340)])
+                .presentationBackgroundInteraction(.enabled(upThrough: .height(340)))
+        })
     }
+    
 }
 
 //struct ContentView_Previews: PreviewProvider {
