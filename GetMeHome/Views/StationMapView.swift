@@ -23,53 +23,53 @@ struct StationMapView: View {
     
     
     var body: some View {
-        ZStack {
-            Button(action: {
-                showStationSheet.toggle()
-            }, label: {
-                VStack(alignment: .leading) {
-                    HStack(alignment: .top) {
-                        Text("Change Stations")
-                            .font(.title)
-                    }
-                }
+        Map(position: $cameraPosition, selection: $mapSelection) {
+            ForEach(viewModel.destinationMapLocations) { station in
+                Marker(station.name, coordinate: station.coordinate)
                 
-            })
-            
-            Map(position: $cameraPosition, selection: $mapSelection) {
-                ForEach(viewModel.destinationMapLocations) { station in
-                    Marker(station.name, coordinate: station.coordinate)
-                }
-                Marker("Home", coordinate: .home)
             }
-            .ignoresSafeArea(.all)
-//            .onAppear { Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)} }
-            .mapStyle(.standard(
-                pointsOfInterest: .including([MKPointOfInterestCategory(rawValue: "publicTransport")])))
-            .onChange(of: mapSelection, { oldValue, newValue in
-                print(mapSelection?.description ?? "Nothing Selected")
-                showDetails = newValue != nil
-            })
-            .sheet(isPresented: $showDetails, content: {
+            Marker("Home", coordinate: .home)
+        }
+        .ignoresSafeArea(.all)
+        //            .onAppear { Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)} }
+        .mapStyle(.standard(pointsOfInterest: .including([MKPointOfInterestCategory(rawValue: "publicTransport")])))
+        .onChange(of: mapSelection, { oldValue, newValue in
+            print(mapSelection?.description ?? "Nothing Selected")
+            showDetails = newValue != nil
+        })
+        .sheet(
+            isPresented: $showDetails, content: {
                 StationDetails(selection: $mapSelection, show: $showDetails)
                     .presentationDetents([.height(340)])
                     .presentationBackgroundInteraction(.enabled(upThrough: .height(340)))
-            })
-            .sheet(isPresented: $showStationSheet
-                   , onDismiss: {
-                Task{await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations)}
+            }
+        )
+        .sheet(
+            isPresented: $showStationSheet,
+            onDismiss: {
+                Task{ await viewModel.getRouteAndETA(startStation: startStation, destinationStations: destinationStations) }
             }, content: {
                 FormView(destinationStations: $destinationStations, startStation: $startStation, show: $showStationSheet)
+            }
+        )
+        .overlay(alignment: .topLeading, content: {
+            Button(action: {
+                showStationSheet.toggle()
+            }, label: {
+                Text("   < Edit")
+                    .foregroundStyle(Color(.blue))
             })
-            
-            
-        }
+        })
+        
+        
+        
     }
     
 }
 
-//struct ContentView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        StationMapView()
-//    }
-//}
+@available(iOS 17.0, *)
+struct ContentView_Previews: PreviewProvider {
+    static var previews: some View {
+        StationMapView()
+    }
+}
