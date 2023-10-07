@@ -13,7 +13,6 @@
 		434D15512A8663A200F553D8 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434D15502A8663A200F553D8 /* Preview Assets.xcassets */; };
 		434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D155A2A86E71A00F553D8 /* SavedPlaces.swift */; };
 		43634F532A9CFE5600EF0963 /* StationMapViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */; };
-		43BB795B2AB86F5800BFFF27 /* StationDetails.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43BB795A2AB86F5800BFFF27 /* StationDetails.swift */; };
 		43CF68732A94129000FFC731 /* FormView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 43CF68722A94129000FFC731 /* FormView.swift */; };
 /* End PBXBuildFile section */
 
@@ -25,7 +24,6 @@
 		434D15502A8663A200F553D8 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		434D155A2A86E71A00F553D8 /* SavedPlaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SavedPlaces.swift; sourceTree = "<group>"; };
 		43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationMapViewModel.swift; sourceTree = "<group>"; };
-		43BB795A2AB86F5800BFFF27 /* StationDetails.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationDetails.swift; sourceTree = "<group>"; };
 		43CF68722A94129000FFC731 /* FormView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -82,7 +80,6 @@
 				43CF68722A94129000FFC731 /* FormView.swift */,
 				434D154B2A8663A100F553D8 /* StationMapView.swift */,
 				43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */,
-				43BB795A2AB86F5800BFFF27 /* StationDetails.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -176,7 +173,6 @@
 				43CF68732A94129000FFC731 /* FormView.swift in Sources */,
 				434D154C2A8663A100F553D8 /* StationMapView.swift in Sources */,
 				434D154A2A8663A100F553D8 /* GetMeHomeApp.swift in Sources */,
-				43BB795B2AB86F5800BFFF27 /* StationDetails.swift in Sources */,
 				43634F532A9CFE5600EF0963 /* StationMapViewModel.swift in Sources */,
 				434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */,
 			);
@@ -235,7 +231,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -289,7 +285,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -310,6 +306,7 @@
 				DEVELOPMENT_TEAM = WB46CA9337;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GetMetHome;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -339,6 +336,7 @@
 				DEVELOPMENT_TEAM = WB46CA9337;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = GetMetHome;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

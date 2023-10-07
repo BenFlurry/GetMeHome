@@ -52,7 +52,8 @@ struct MapLocation: Identifiable {
     let name: String
     let coordinate: CLLocationCoordinate2D
     var isStart: Bool = false
-    var etaTime: TimeInterval?
+    var etaTime: Int?
+    var timeOfArrival: String?
     
     init(name: String, lat: Double, long: Double, isStart: Bool) {
         self.name = name

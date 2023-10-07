@@ -35,7 +35,8 @@ final class StationMapViewModel: ObservableObject {
     func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
         await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
         
-        for var location in destinationMapLocations {
+        for (index, location) in destinationMapLocations.enumerated() {
+            var modifiedLocation = location
          
             let request = MKDirections.Request()
             request.source = MKMapItem(placemark: MKPlacemark(coordinate: startMapLocation!.coordinate))
@@ -45,8 +46,8 @@ final class StationMapViewModel: ObservableObject {
             request.transportType = .transit
             request.requestsAlternateRoutes = false
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
-            request.departureDate = .now.advanced(by: 3600)
-            
+//            request.departureDate = .now.advanced(by: 3600)
+ 
 
             
             // need to add checking if the route is the fastest based off of arrival time
@@ -55,13 +56,16 @@ final class StationMapViewModel: ObservableObject {
             
             guard let response = try? await directionsRequest.calculateETA() else { return }
             
-            let eta = response.expectedTravelTime/60
-            
+            let eta = Int(round(response.expectedTravelTime/60))
 
-            location.etaTime = eta
-            print("\(eta.description), \(location.name), \(response.expectedDepartureDate.description)")
-//            self.etaTime.append(location)
-//            self.routeLines.append(route)
+            
+            
+            modifiedLocation.etaTime = eta
+            modifiedLocation.timeOfArrival = response.expectedArrivalDate.formatted(date: .omitted, time: .shortened)
+            
+            destinationMapLocations[index] = modifiedLocation
+//            print("\(eta.description), \(location.name), \(location.timeOfArrival?.description ?? "err")")
+
 
         }
     }
