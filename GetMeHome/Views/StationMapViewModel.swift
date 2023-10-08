@@ -8,43 +8,61 @@
 import Foundation
 import MapKit
 
+final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
+    private var locationManager = CLLocationManager()
+    @Published var location: CLLocation?
+    
+    override init() {
+        super.init()
+        self.locationManager.delegate = self
+        self.locationManager.requestWhenInUseAuthorization()
+        self.locationManager.startUpdatingLocation()
+        print(self.locationManager.authorizationStatus)
+ 
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        location = locations.last
+        print(location?.description ?? "None")
+
+    }
+    
+}
+
 @MainActor
 final class StationMapViewModel: ObservableObject {
-    @Published var stationMapLocations: [MapLocation] = []
     @Published var region = MKCoordinateRegion.home
-//    @Published var routeLines: [MKRoute] = []
-//    @Published var etaTime: [MapLocation] = []
     
     private var startMapLocation: MapLocation?
     @Published var destinationMapLocations: [MapLocation] = []
+    private var locationManager = LocationManager()
     
     
-    func getMapCoordinates(startStation: Station, destinationStations: [Station]) async -> Void {
+    func getMapCoordinates(destinationStations: [Station]) async -> Void {
         for station in destinationStations {
             let coordinate = await getCoordinateFromStationName(name: station.name)
-            self.stationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
             self.destinationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
         }
-        let coordinate = await getCoordinateFromStationName(name: startStation.name)
-        
-        self.stationMapLocations.append(MapLocation(name: startStation.name, coordinate: coordinate, isStart: true))
-        self.startMapLocation = MapLocation(name: startStation.name, coordinate: coordinate)
-        
     }
     
-    func getRouteAndETA(startStation: Station, destinationStations: [Station]) async -> Void {
-        await getMapCoordinates(startStation: startStation, destinationStations: destinationStations)
+    func getRouteAndETA(destinationStations: [Station]) async -> Void {
+        await getMapCoordinates(destinationStations: destinationStations)
         
         for (index, location) in destinationMapLocations.enumerated() {
             var modifiedLocation = location
          
             let request = MKDirections.Request()
-            request.source = MKMapItem(placemark: MKPlacemark(coordinate: startMapLocation!.coordinate))
             
-            // need to request multiple routes, and see which one is the fastest
+            //conver to use cllocation
+            print(locationManager.location?.description ?? "NOne here")
+            if let userLocation = locationManager.location {
+                request.source = MKMapItem(placemark: MKPlacemark(coordinate: userLocation.coordinate))
+            } else {
+                print("failed to get location")
+                return
+            }
             
             request.transportType = .transit
-            request.requestsAlternateRoutes = false
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
 //            request.departureDate = .now.advanced(by: 3600)
  
@@ -62,6 +80,7 @@ final class StationMapViewModel: ObservableObject {
             
             modifiedLocation.etaTime = eta
             modifiedLocation.timeOfArrival = response.expectedArrivalDate.formatted(date: .omitted, time: .shortened)
+            modifiedLocation.timeOfStart = response.expectedDepartureDate.formatted(date: .omitted, time: .shortened)
             
             destinationMapLocations[index] = modifiedLocation
 //            print("\(eta.description), \(location.name), \(location.timeOfArrival?.description ?? "err")")

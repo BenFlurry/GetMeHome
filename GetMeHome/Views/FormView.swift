@@ -9,9 +9,10 @@ import SwiftUI
 
 @available(iOS 17.0, *)
 struct FormView: View {
-    @Binding var destinationStations: [Station]
-    @Binding var startStation: Station 
-    @Binding var show: Bool
+    // need to add app storage for this
+    @State var destinationStations: [Station] = Data().getDestinations()
+    @State var startStation: Station = Data().getStart()
+    @State var showDestinationForm: Bool = false
     
     var body: some View {
         NavigationView {
@@ -45,7 +46,7 @@ struct FormView: View {
                 } // ToolbarItem
                 ToolbarItem(placement: .bottomBar) {
                     Button {
-                        show.toggle()
+                        showDestinationForm.toggle()
                     } label: {
                         Text("Go!")
                             .font(.title)
@@ -55,11 +56,14 @@ struct FormView: View {
                 }
             } // toolbar
         } // NavigationView
+        .sheet(isPresented: $showDestinationForm, content: {
+            DestinationSheet(destinations: destinationStations)
+        })
     }
 }
 
-//struct FormView_Previews: PreviewProvider {
-//    static var previews: some View {
-//        FormView()
-//    }
-//}
+struct FormView_Previews: PreviewProvider {
+    static var previews: some View {
+        FormView()
+    }
+}

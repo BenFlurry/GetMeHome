@@ -54,6 +54,7 @@ struct MapLocation: Identifiable {
     var isStart: Bool = false
     var etaTime: Int?
     var timeOfArrival: String?
+    var timeOfStart: String?
     
     init(name: String, lat: Double, long: Double, isStart: Bool) {
         self.name = name

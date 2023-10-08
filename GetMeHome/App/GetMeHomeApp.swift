@@ -12,7 +12,7 @@ import SwiftUI
 struct GetMeHomeApp: App {
     var body: some Scene {
         WindowGroup {
-            StationMapView()
+            FormView()
         }
     }
 }

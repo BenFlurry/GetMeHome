@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		4302183D2AD2166800BEA0B1 /* DestinationSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4302183C2AD2166800BEA0B1 /* DestinationSheet.swift */; };
 		434D154A2A8663A100F553D8 /* GetMeHomeApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D15492A8663A100F553D8 /* GetMeHomeApp.swift */; };
 		434D154C2A8663A100F553D8 /* StationMapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 434D154B2A8663A100F553D8 /* StationMapView.swift */; };
 		434D154E2A8663A200F553D8 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 434D154D2A8663A200F553D8 /* Assets.xcassets */; };
@@ -17,6 +18,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		4302183C2AD2166800BEA0B1 /* DestinationSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DestinationSheet.swift; sourceTree = "<group>"; };
+		4302183E2AD224CF00BEA0B1 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		434D15462A8663A100F553D8 /* GetMeHome.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = GetMeHome.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		434D15492A8663A100F553D8 /* GetMeHomeApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GetMeHomeApp.swift; sourceTree = "<group>"; };
 		434D154B2A8663A100F553D8 /* StationMapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StationMapView.swift; sourceTree = "<group>"; };
@@ -57,6 +60,7 @@
 		434D15482A8663A100F553D8 /* GetMeHome */ = {
 			isa = PBXGroup;
 			children = (
+				4302183E2AD224CF00BEA0B1 /* Info.plist */,
 				434D155D2A86E7A700F553D8 /* App */,
 				434D155C2A86E76300F553D8 /* Views */,
 				434D155E2A86E7CB00F553D8 /* PlaceSupport */,
@@ -79,6 +83,7 @@
 			children = (
 				43CF68722A94129000FFC731 /* FormView.swift */,
 				434D154B2A8663A100F553D8 /* StationMapView.swift */,
+				4302183C2AD2166800BEA0B1 /* DestinationSheet.swift */,
 				43634F522A9CFE5600EF0963 /* StationMapViewModel.swift */,
 			);
 			path = Views;
@@ -172,6 +177,7 @@
 			files = (
 				43CF68732A94129000FFC731 /* FormView.swift in Sources */,
 				434D154C2A8663A100F553D8 /* StationMapView.swift in Sources */,
+				4302183D2AD2166800BEA0B1 /* DestinationSheet.swift in Sources */,
 				434D154A2A8663A100F553D8 /* GetMeHomeApp.swift in Sources */,
 				43634F532A9CFE5600EF0963 /* StationMapViewModel.swift in Sources */,
 				434D155B2A86E71A00F553D8 /* SavedPlaces.swift in Sources */,
@@ -306,6 +312,7 @@
 				DEVELOPMENT_TEAM = WB46CA9337;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GetMeHome/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GetMetHome;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -336,6 +343,7 @@
 				DEVELOPMENT_TEAM = WB46CA9337;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = GetMeHome/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = GetMetHome;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
