@@ -36,6 +36,14 @@ struct Data {
                 "High Wycombe",
                 "Beaconsfield"]
     }
+    func getDestinationsFromAppStorage() -> [String] {
+        return UserDefaults.standard.stringArray(forKey: "stations") ?? []
+    }
+    
+    func storeStationsInAppStorage(stations: [String]) -> Void {
+        UserDefaults.standard.set(stations, forKey: "stations")
+    }
+    
 }
 
 struct MapLocation: Identifiable {

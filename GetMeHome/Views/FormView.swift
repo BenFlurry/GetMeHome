@@ -10,6 +10,7 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct FormView: View {
     // need to add app storage for this
+//    @State var destinationStations: [String] = UserDefaults.standard.stringArray(forKey: "stations") ?? []
     @State var destinationStations: [String] = Data().getDestinations()
     @State var showDestinationForm: Bool = false
     
@@ -41,6 +42,8 @@ struct FormView: View {
                 } // ToolbarItem
                 ToolbarItem(placement: .bottomBar) {
                     Button {
+                        destinationStations = destinationStations.filter({ !$0.isEmpty })
+//                        UserDefaults.standard.set(destinationStations, forKey: "stations")
                         showDestinationForm.toggle()
                     } label: {
                         Text("Go!")
@@ -55,6 +58,8 @@ struct FormView: View {
             DestinationSheet(destinations: destinationStations)
         })
     }
+
+    
 }
 
 struct FormView_Previews: PreviewProvider {
