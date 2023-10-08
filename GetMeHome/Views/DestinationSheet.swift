@@ -16,7 +16,6 @@ struct DestinationSheet: View {
     var body: some View {
         List() {
             ForEach(viewModel.destinationMapLocations) { station in
-                
                 VStack {
                     Text(station.name)
                         .fontWeight(.bold)

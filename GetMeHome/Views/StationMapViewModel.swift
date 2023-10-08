@@ -8,7 +8,7 @@
 import Foundation
 import MapKit
 
-final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObject {
+class LocationManager: NSObject, ObservableObject {
     private var locationManager = CLLocationManager()
     @Published var location: CLLocation?
     
@@ -17,16 +17,35 @@ final class LocationManager: NSObject, CLLocationManagerDelegate, ObservableObje
         self.locationManager.delegate = self
         self.locationManager.requestWhenInUseAuthorization()
         self.locationManager.startUpdatingLocation()
-        print(self.locationManager.authorizationStatus)
- 
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         location = locations.last
         print(location?.description ?? "None")
-
     }
-    
+}
+
+extension LocationManager: CLLocationManagerDelegate {
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch manager.authorizationStatus {
+            case .notDetermined:
+                print("undetermined")
+                
+            case .restricted:
+                print("restricted")
+            case .denied:
+                print("denied")
+            case .authorizedAlways:
+                print("authorised always")
+                manager.requestLocation()
+            case .authorizedWhenInUse:
+                print("when in use")
+                manager.startUpdatingLocation()
+                
+            @unknown default:
+                print("unknown case")
+        }
+    }
 }
 
 @MainActor
@@ -52,19 +71,17 @@ final class StationMapViewModel: ObservableObject {
             var modifiedLocation = location
          
             let request = MKDirections.Request()
-            
-            //conver to use cllocation
+
             if let userLocation = locationManager.location {
+                print("got location")
                 request.source = MKMapItem(placemark: MKPlacemark(coordinate: userLocation.coordinate))
             } else {
                 print("failed to get location")
                 request.source = MKMapItem(placemark: MKPlacemark(coordinate: .home))
-//                return
             }
             request.transportType = .transit
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
 
-            // need to add checking if the route is the fastest based off of arrival time
             let directionsRequest = MKDirections(request: request)
             
             guard let response = try? await directionsRequest.calculateETA() else { return }
