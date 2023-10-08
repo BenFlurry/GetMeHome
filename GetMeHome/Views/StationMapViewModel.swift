@@ -38,14 +38,14 @@ final class StationMapViewModel: ObservableObject {
     private var locationManager = LocationManager()
     
     
-    func getMapCoordinates(destinationStations: [Station]) async -> Void {
+    func getMapCoordinates(destinationStations: [String]) async -> Void {
         for station in destinationStations {
-            let coordinate = await getCoordinateFromStationName(name: station.name)
-            self.destinationMapLocations.append(MapLocation(name: station.name, coordinate: coordinate))
+            let coordinate = await getCoordinateFromStationName(name: station)
+            self.destinationMapLocations.append(MapLocation(name: station, coordinate: coordinate))
         }
     }
     
-    func getRouteAndETA(destinationStations: [Station]) async -> Void {
+    func getRouteAndETA(destinationStations: [String]) async -> Void {
         await getMapCoordinates(destinationStations: destinationStations)
         
         for (index, location) in destinationMapLocations.enumerated() {
@@ -54,38 +54,27 @@ final class StationMapViewModel: ObservableObject {
             let request = MKDirections.Request()
             
             //conver to use cllocation
-            print(locationManager.location?.description ?? "NOne here")
             if let userLocation = locationManager.location {
                 request.source = MKMapItem(placemark: MKPlacemark(coordinate: userLocation.coordinate))
             } else {
                 print("failed to get location")
-                return
+                request.source = MKMapItem(placemark: MKPlacemark(coordinate: .home))
+//                return
             }
-            
             request.transportType = .transit
             request.destination = MKMapItem(placemark: MKPlacemark(coordinate: location.coordinate))
-//            request.departureDate = .now.advanced(by: 3600)
- 
 
-            
             // need to add checking if the route is the fastest based off of arrival time
             let directionsRequest = MKDirections(request: request)
-            
             
             guard let response = try? await directionsRequest.calculateETA() else { return }
             
             let eta = Int(round(response.expectedTravelTime/60))
-
-            
-            
             modifiedLocation.etaTime = eta
             modifiedLocation.timeOfArrival = response.expectedArrivalDate.formatted(date: .omitted, time: .shortened)
             modifiedLocation.timeOfStart = response.expectedDepartureDate.formatted(date: .omitted, time: .shortened)
             
             destinationMapLocations[index] = modifiedLocation
-//            print("\(eta.description), \(location.name), \(location.timeOfArrival?.description ?? "err")")
-
-
         }
     }
     
@@ -95,7 +84,6 @@ final class StationMapViewModel: ObservableObject {
         searchRequest.region = region
         searchRequest.pointOfInterestFilter = MKPointOfInterestFilter(including: [MKPointOfInterestCategory(rawValue: "publicTransport")])
         
-        // might wanna make this a guard statement
         let results = try? await MKLocalSearch(request: searchRequest).start()
 
         let item = results?.mapItems.first!

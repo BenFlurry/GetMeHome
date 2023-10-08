@@ -26,23 +26,15 @@ extension MKCoordinateRegion {
 }
 
 extension CLLocationCoordinate2D {
-    static let home = CLLocationCoordinate2D(latitude: 51.658539, longitude: -0.703750)
-}
-
-struct Station: Identifiable, Equatable {
-    var id = UUID()
-    var name: String
+    static let home = CLLocationCoordinate2D(latitude: 51.52196, longitude: -0.14032)
 }
 
 struct Data {
-    func getDestinations() -> [Station] {
-        return [Station(name: "Amersham"),
-                Station(name: "Chalfont & Latimer"),
-                Station(name: "High Wycombe"),
-                Station(name: "Beaconsfield")]
-    }
-    func getStart() -> Station {
-        return Station(name: "Great Portland Street")
+    func getDestinations() -> [String] {
+        return ["Amersham",
+                "Chalfont & Latimer",
+                "High Wycombe",
+                "Beaconsfield"]
     }
 }
 

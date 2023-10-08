@@ -10,27 +10,22 @@ import SwiftUI
 @available(iOS 17.0, *)
 struct FormView: View {
     // need to add app storage for this
-    @State var destinationStations: [Station] = Data().getDestinations()
-    @State var startStation: Station = Data().getStart()
+    @State var destinationStations: [String] = Data().getDestinations()
     @State var showDestinationForm: Bool = false
     
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Start")
-                    .fontWeight(.bold)
-                    .font(.title)) {
-                        TextField("Enter Start Station", text: $startStation.name)
-                    }
-                Section(header: Text("Destinations")
+                Section(header: Text("Destination Stations")
                     .fontWeight(.bold)
                     .font(.title)
                 ) {
-                    ForEach($destinationStations) { $station in
-                        TextField("Enter Destination Station", text: $station.name)
+                    ForEach($destinationStations, id: \.self) { $station in
+                        TextField("Enter Destination Station", text: $station)
                     }
                     .onDelete { destinationStations.remove(atOffsets: $0) }
                     .onMove { destinationStations.move(fromOffsets: $0, toOffset: $1) }
+                    
                 } // Section
             } // List
             .toolbar {
@@ -39,7 +34,7 @@ struct FormView: View {
                 } // ToolbarItem
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        destinationStations.append(Station(name:""))
+                        destinationStations.append("")
                     } label: {
                         Text("Add").font(.title3).fontWeight(.semibold)
                     }

@@ -11,7 +11,7 @@ import MapKit
 struct DestinationSheet: View {
     
     @StateObject private var viewModel = StationMapViewModel()
-    @State var destinations = [Station]()
+    @State var destinations = [String]()
     
     var body: some View {
         List() {
